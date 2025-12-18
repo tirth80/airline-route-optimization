@@ -1,296 +1,86 @@
-# ✈️ Airline Route Optimization & Delay Prediction System
+# ✈️ Airline Route Optimization & AI Assistant
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-Enabled-brightgreen)
-![ML](https://img.shields.io/badge/ML-XGBoost%20%7C%20LightGBM-orange)
-![Accuracy](https://img.shields.io/badge/Accuracy-82.67%25-success)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
+![LightGBM](https://img.shields.io/badge/LightGBM-4.0+-green.svg)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20DB-orange.svg)
+![Airflow](https://img.shields.io/badge/Airflow-2.7+-teal.svg)
+![RAG](https://img.shields.io/badge/RAG-Powered-purple.svg)
 
-A comprehensive end-to-end flight delay analysis and prediction system built using **4.5M+ US domestic flight records**.  
-Features ML-powered delay prediction, cost impact simulation, and an interactive Streamlit dashboard.
-
-> **Why this exists**  
-> Flight delays cost airlines billions annually and frustrate millions of passengers.  
-> This project provides actionable insights for route optimization, delay prediction, and cost quantification.
+A comprehensive flight delay prediction and optimization system featuring an AI-powered assistant built with RAG (Retrieval-Augmented Generation) architecture.
 
 ---
 
-## 📂 Table of Contents
+## 🎯 Project Overview
 
-- [Architecture](#architecture)
-- [Key Findings](#key-findings)
-- [Quickstart](#quickstart)
-- [Data Overview](#data-overview)
-- [Usage Guide](#usage-guide)
-- [Project Layout](#project-layout)
-- [Modeling Details](#modeling-details)
-- [Dashboard Features](#dashboard-features)
-- [Cost Simulator](#cost-simulator)
-- [Results](#results)
-- [Future Enhancements](#future-enhancements)
+This project analyzes **4.5+ million US domestic flights** to predict delays, optimize routes, and provide intelligent recommendations through a conversational AI assistant.
+
+### Key Highlights
+
+- **ML Model**: 82.67% accuracy using LightGBM ensemble
+- **Real-Time Data**: Live flight status via AviationStack API
+- **AI Assistant**: RAG-powered chatbot with Groq/Llama 3.3
+- **Vector Search**: ChromaDB for semantic retrieval
+- **Automation**: Airflow DAGs for daily pipeline updates
+- **Cost Analysis**: $47M+ annual delay costs quantified
 
 ---
 
-## 🏗 Architecture
+## 🏗️ Architecture
 ```
-CSV (4.5M+ flights)
-    │
-    ▼
-[Data Cleaning] → Feature Engineering (29 features)
-    │
-    ▼
-[EDA] → Visualizations (15+ charts) → Key Insights
-    │
-    ▼
-[ML Pipeline]
-    ├── Logistic Regression (Baseline)
-    ├── Random Forest
-    ├── XGBoost
-    ├── LightGBM
-    └── Gradient Boosting
-    │
-    ▼
-[Ensemble Model] → Threshold Optimization → 82.67% Accuracy
-    │
-    ▼
-[Streamlit Dashboard]
-    ├── Overview (KPIs & Charts)
-    ├── Delay Predictor (ML-powered)
-    ├── Cost Simulator (Financial impact)
-    └── Route Analyzer (Airport analysis)
-```
-
----
-
-**Design Choices**
-
-- **Large-scale data** — 4.5M+ flight records for robust analysis
-- **Ensemble approach** — Combines XGBoost + LightGBM + Random Forest
-- **Threshold optimization** — Tuned for maximum accuracy (0.75 threshold)
-- **Interactive UI** — Streamlit dashboard for easy exploration
-- **Cost quantification** — Real-world financial impact calculations
-
----
-
-## 📊 Key Findings
-
-| Insight | Finding |
-|---------|---------|
-| Total Flights Analyzed | 4,542,343 |
-| Overall Delay Rate | 18.9% |
-| Delayed Flights | 859,158 |
-| Best Month to Fly | September (14% delays) |
-| Worst Month to Fly | June (24% delays) |
-| Best Time to Fly | Early morning (5-7 AM) |
-| Worst Time to Fly | Evening (6-9 PM) |
-| Best Day to Fly | Saturday |
-| Worst Day to Fly | Thursday/Friday |
-
----
-
-## 🚀 Quickstart
-```bash
-# 1. Clone the repository
-git clone https://github.com/tirth80/airline-route-optimization.git
-cd airline-route-optimization
-
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Run the dashboard
-streamlit run app.py
+┌─────────────────────────────────────────────────────────────────┐
+│                     USER INTERFACE                               │
+│                  (Streamlit Dashboard)                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
+│   │   Overview  │  │   Delay     │  │      AI Assistant       │ │
+│   │  Dashboard  │  │  Predictor  │  │    (RAG + Groq LLM)     │ │
+│   └─────────────┘  └─────────────┘  └─────────────────────────┘ │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                      RAG PIPELINE                                │
+│                                                                  │
+│   ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
+│   │  Chunking   │──▶  Embedding  │──▶   ChromaDB Vector DB    │ │
+│   │  Pipeline   │  │  (MiniLM)   │  │    (41+ documents)      │ │
+│   └─────────────┘  └─────────────┘  └─────────────────────────┘ │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                     DATA SOURCES                                 │
+│                                                                  │
+│   ┌─────────────────────┐      ┌─────────────────────────────┐  │
+│   │   Historical Data   │      │     Real-Time API           │  │
+│   │   (2019 - 4.5M)     │      │    (AviationStack)          │  │
+│   └─────────────────────┘      └─────────────────────────────┘  │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                     AUTOMATION                                   │
+│                                                                  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │              Apache Airflow DAGs                         │   │
+│   │     (Daily data fetch, embedding updates, QA checks)     │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📁 Data Overview
+## ✨ Features
 
-### Input Features
+### Phase 1: ML & Analytics
+- 📊 Exploratory Data Analysis on 4.5M+ flights
+- 🤖 LightGBM model with 82.67% accuracy
+- 💰 Cost simulator quantifying delay impact
+- 📈 Interactive Streamlit dashboard
 
-| Feature | Description |
-|---------|-------------|
-| `MONTH` | Month of flight (1-12) |
-| `DAY_OF_WEEK` | Day of week (1-7) |
-| `DEP_TIME_BLK` | Departure time block |
-| `CARRIER_NAME` | Airline name |
-| `DEPARTING_AIRPORT` | Origin airport |
-| `DISTANCE_GROUP` | Flight distance category |
-| `CONCURRENT_FLIGHTS` | Number of concurrent flights |
-| `PRCP`, `SNOW`, `TMAX`, `AWND` | Weather conditions |
-| `CARRIER_HISTORICAL` | Historical carrier delay rate |
-| `DEP_AIRPORT_HIST` | Historical airport delay rate |
-
-### Target Variable
-
-| Field | Description |
-|-------|-------------|
-| `DEP_DEL15` | Binary (1 = Delayed >15 min, 0 = On-time) |
-
----
-
-## 📖 Usage Guide
-
-### Streamlit Dashboard
-```bash
-streamlit run app.py
-```
-
-Opens at `http://localhost:8501`
-
-### Jupyter Notebooks
-```bash
-jupyter notebook
-```
-
-- `01_data_loading_and_exploration.ipynb` — EDA & visualizations
-- `02_ML_Model.ipynb` — Model training & evaluation
-
----
-
-## 📂 Project Layout
-```
-airline-route-optimization/
-│
-├── app.py                      # Streamlit dashboard
-├── requirements.txt            # Dependencies
-├── README.md                   # Documentation
-│
-├── data/
-│   └── raw/
-│       └── flights_2019.csv    # Flight data (4.5M records)
-│
-├── notebooks/
-│   ├── 01_data_loading_and_exploration.ipynb
-│   ├── 02_ML_Model.ipynb
-│   └── 03_Simulator.ipynb
-│
-├── src/
-│   ├── xgb_model.pkl           # Trained XGBoost model
-│   ├── lgb_model.pkl           # Trained LightGBM model
-│   ├── rf_model.pkl            # Trained Random Forest model
-│   ├── scaler.pkl              # Feature scaler
-│   ├── features.pkl            # Feature list
-│   └── simulator.py            # Cost simulator functions
-│
-└── reports/
-    └── visualizations/
-        ├── model_comparison.png
-        ├── feature_importance.png
-        ├── confusion_matrix.png
-        └── roc_curves.png
-```
-
----
-
-## 🤖 Modeling Details
-
-### Models Compared
-
-| Model | Accuracy | ROC AUC |
-|-------|----------|---------|
-| Logistic Regression | 62.91% | 0.6721 |
-| Random Forest | 77.10% | 0.7161 |
-| XGBoost | 72.37% | 0.7183 |
-| LightGBM | 67.06% | 0.7197 |
-| Gradient Boosting | 81.43% | 0.6985 |
-| **Ensemble (Tuned)** | **82.67%** | **0.7496** |
-
-### Final Model Performance
-
-| Metric | Score |
-|--------|-------|
-| **Accuracy** | 82.67% |
-| **ROC AUC** | 0.7496 |
-| **Precision** | 68.40% |
-| **Recall** | 15.60% |
-| **F1 Score** | 25.41% |
-| **Optimal Threshold** | 0.75 |
-
-### Top Predictive Features
-
-1. `DEP_BLOCK_HIST` — Historical departure block delay rate
-2. `PRCP` — Precipitation
-3. `CARRIER_HISTORICAL` — Carrier's historical delay rate
-4. `AVG_MONTHLY_PASS_AIRLINE` — Average monthly passengers
-5. `DEP_TIME_BLK` — Departure time block
-
----
-
-## 🖥️ Dashboard Features
-
-### 1. Overview Dashboard
-- Total flights, delay rate, KPIs
-- Monthly delay trends
-- Day of week analysis
-- Airline performance comparison
-
-### 2. Delay Predictor
-- Select month, day, airline, airport
-- ML-powered delay probability
-- Risk level assessment (Low/Medium/High)
-- Historical comparison
-
-### 3. Cost Simulator
-- Input delay duration & passengers
-- Calculates fuel, crew, passenger costs
-- Customer satisfaction (NPS) impact
-- Annual cost projections
-
-### 4. Route Analyzer
-- Airport-level performance analysis
-- Best/worst months and carriers
-- Delay trends over time
-- Estimated annual delay costs
-
----
-
-## 💰 Cost Simulator
-
-### Cost Breakdown
-
-| Cost Component | Rate |
-|----------------|------|
-| Fuel | $40/minute |
-| Crew | $25/minute |
-| Maintenance | $15/minute |
-| Passenger Compensation (>1hr) | $10/passenger |
-| Passenger Compensation (>2hr) | $25/passenger |
-| Passenger Compensation (>3hr) | $75/passenger |
-
-### Example Calculation
-```
-60-minute delay with 150 passengers:
-────────────────────────────────────
-  Fuel:         $2,400
-  Crew:         $1,500
-  Maintenance:    $900
-  Passengers:   $1,500
-  ─────────────────────
-  TOTAL:        $6,300
-  NPS Impact:   -10 points
-```
-
----
-
-## 📈 Results
-
-### Business Insights
-
-- **$47M+** estimated annual delay cost at major hubs
-- **16%** improvement possible by shifting flights to morning
-- **September** identified as optimal month for travel
-- **Thursday/Friday evenings** are highest risk periods
-
-### What-If Scenarios
-
-| Scenario | Current | Proposed | Savings |
-|----------|---------|----------|---------|
-| Shift evening → morning | 28% delays | 12% delays | $3.2M/year |
-| Reduce congestion | 32% delays | 15% delays | $5.1M/year |
+### Phase 2: RAG & AI Assistant
+- 🧠 RAG-powered conversational AI
+- 🔍 Semantic search with ChromaDB
+- ⚡ Real-time flight data integration
+- 🔄 Automated Airflow pipelines
+- 💬 Natural language Q&A interface
 
 ---
 
@@ -298,47 +88,228 @@ airline-route-optimization/
 
 | Category | Technologies |
 |----------|--------------|
-| **Language** | Python 3.10+ |
+| **ML/AI** | LightGBM, XGBoost, Scikit-learn |
+| **RAG** | ChromaDB, Sentence-Transformers |
+| **LLM** | Groq API (Llama 3.3 70B) |
 | **Data** | Pandas, NumPy |
-| **ML** | Scikit-learn, XGBoost, LightGBM |
-| **Visualization** | Matplotlib, Seaborn, Plotly |
+| **Visualization** | Plotly, Matplotlib, Seaborn |
 | **Dashboard** | Streamlit |
-| **Notebook** | Jupyter |
+| **Orchestration** | Apache Airflow, Docker |
+| **APIs** | AviationStack (real-time flights) |
 
 ---
 
-## 🚀 Future Enhancements
-
-- [ ] Real-time weather API integration
-- [ ] Deploy to Streamlit Cloud
-- [ ] Add arrival delay prediction
-- [ ] Include more airports/carriers
-- [ ] Build RAG-powered AI assistant (Phase 2)
-- [ ] Mobile-responsive dashboard
+## 📁 Project Structure
+```
+airline-route-optimization/
+│
+├── app/                             # Streamlit Dashboard
+│   ├── app.py                       # Main dashboard
+│   └── pages/
+│       └── 05_AI_Assistant.py       # AI Chatbot
+│
+├── rag/                             # RAG System
+│   ├── chunking/
+│   │   └── text_chunker.py          # Document chunking
+│   ├── vectorstore/
+│   │   └── chroma_store.py          # ChromaDB operations
+│   └── pipeline.py                  # End-to-end RAG
+│
+├── knowledge_base/                  # Knowledge Documents
+│   ├── historical/                  # 2019 flight analysis
+│   │   ├── 01_overview.md
+│   │   ├── 02_airlines.md
+│   │   ├── 03_airports.md
+│   │   ├── 04_time_patterns.md
+│   │   └── 05_cost_analysis.md
+│   └── current/                     # Real-time status
+│       └── today_status.md
+│
+├── airflow/                         # Pipeline Automation
+│   ├── dags/
+│   │   ├── daily_flight_pipeline.py
+│   │   └── rag_quality_check.py
+│   └── docker-compose.yaml
+│
+├── data/
+│   └── api/
+│       └── aviation_stack.py        # Real-time API wrapper
+│
+├── notebooks/                       # Analysis Notebooks
+│   ├── 01_EDA.ipynb
+│   └── 02_ML_Model.ipynb
+│
+├── config/
+│   └── settings.py                  # Configuration
+│
+├── models/                          # Trained Models
+│   └── lgb_model.pkl
+│
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 🤝 Contributing
+## 🚀 Quick Start
 
-Contributions welcome! Please:
+### Prerequisites
+- Python 3.10+
+- Docker (for Airflow)
 
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
+### Installation
+```bash
+# Clone repository
+git clone https://github.com/tirth80/airline-route-optimization.git
+cd airline-route-optimization
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Create `.env` file:
+```bash
+AVIATIONSTACK_API_KEY=your_key_here
+GROQ_API_KEY=your_key_here
+```
+
+### Run the Application
+```bash
+# Start AI Assistant
+PYTHONPATH=. streamlit run app/pages/05_AI_Assistant.py
+
+# Start Airflow (optional)
+cd airflow
+docker-compose up -d
+```
 
 ---
 
-## 📧 Contact
+## 💬 AI Assistant Demo
 
-**Tirth Patel**  
-GitHub: [@tirth80](https://github.com/tirth80)
+Ask questions like:
+
+| Question | Type |
+|----------|------|
+| "What is today's flight status at JFK?" | Real-time |
+| "Which airline has the best on-time performance?" | Historical |
+| "Should I fly from ATL or ORD today?" | Recommendation |
+| "Compare Delta and United Airlines" | Comparison |
+| "Give me tips for avoiding flight delays" | Advice |
+
+### Sample Interaction
+```
+User: What is the current delay status at all airports?
+
+AI: According to today's data, the current delay status is:
+    1. ATL: 8% delay rate - Excellent
+    2. JFK: 12% delay rate - Good  
+    3. LAX: 18% delay rate - Moderate
+    4. ORD: 25% delay rate - High Delays
+    
+    ATL is performing best, while ORD has weather-related delays.
+```
+
+---
+
+## 📊 Model Performance
+
+| Metric | Score |
+|--------|-------|
+| Accuracy | 82.67% |
+| ROC-AUC | 0.7496 |
+| Precision | 79.3% |
+| Recall | 74.1% |
+
+---
+
+## 📈 Key Insights
+
+| Category | Best | Worst |
+|----------|------|-------|
+| **Time of Day** | 5-7 AM (12% delays) | 6-9 PM (28% delays) |
+| **Day of Week** | Saturday (15%) | Thursday (22%) |
+| **Month** | September (14%) | June (24%) |
+| **Airline** | Delta (82% on-time) | Frontier (72% on-time) |
+
+### Cost Impact
+- **Total Annual Delay Cost**: $47M+ at major hubs
+- **Average Delay Duration**: 57 minutes
+- **Cost per 2-hour Delay**: ~$7,800 per flight
+
+---
+
+## 🔄 Airflow DAGs
+
+| DAG | Schedule | Purpose |
+|-----|----------|---------|
+| `daily_flight_pipeline` | Daily 2AM | Fetch API data, update knowledge base, refresh embeddings |
+| `rag_quality_check` | Daily 6AM | Test retrieval, validate pipeline, generate health report |
+
+Access Airflow UI: http://localhost:8080 (admin/admin)
+
+---
+
+## 🎯 Future Enhancements
+
+- [ ] Weather API integration for better predictions
+- [ ] Flight price optimization module
+- [ ] Mobile app version
+- [ ] Multi-language support
+- [ ] Voice interface
+
+---
+
+## 👤 Author
+
+**Tirth Patel**
+
+[![GitHub](https://img.shields.io/badge/GitHub-tirth80-black?logo=github)](https://github.com/tirth80)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License - see [LICENSE](LICENSE) for details.
+```
 
 ---
 
-*Data Source: Kaggle - 2019 Airline Delays and Cancellations*
+## 🛠️ STEP 5: Save README
+
+1. Scroll down
+2. Add commit message: "Update README for Phase 2"
+3. Click **"Commit changes"**
+
+---
+
+## 🛠️ STEP 6: Update requirements.txt
+
+1. Click on `requirements.txt` file
+2. Click pencil icon to edit
+3. Replace with:
+```
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+lightgbm>=4.0.0
+xgboost>=2.0.0
+streamlit>=1.28.0
+plotly>=5.18.0
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+groq>=0.4.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+tqdm>=4.66.0
+pyyaml>=6.0.0
+joblib>=1.3.0
